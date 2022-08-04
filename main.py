@@ -1,5 +1,6 @@
 # Import libraries
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import geopandas as gpd
 import requests
@@ -33,6 +34,7 @@ tab1_1, tab1_2 = st.tabs(["Home", "Documentation"])
 
 # Home tab
 with tab1_1:
+    st.markdown("### Introduction")
     st.markdown("In this article, we will explore the data regarding gender equality in Indonesia from 2010 to 2021.") 
     st.markdown("Equality of male and female participation in various aspects of life (e.g., health, economy, education, social, and politic) is very crucial on the success of a country development. In order to achieve gender equality, there should be equal access, participation, control, and right in all sectors for both male and female. This allow both male and female to maximize their potential which will benefit both human and country development. Gender Development Index (GDI) and Gender Empowerment Measure (GEM) are the main indicators used to evaluate gender inequality in human development and empowerment.")
     st.markdown("---")
@@ -50,15 +52,15 @@ with tab1_1:
         fig = make_subplots(specs=[[{"secondary_y": True}]])
         # Add traces
         fig.add_trace(
-            go.Bar(x=df.query('Province == "Indonesia"')['Year'], y=df.query('Province == "Indonesia"')['MaleHDI'], name="Male HDI", marker_color='dodgerblue'),
+            go.Bar(x=df.query('Province == "Indonesia"')['Year'], y=df.query('Province == "Indonesia"')['MaleHDI'], name="Male HDI", marker_color='dodgerblue', text=df.query('Province == "Indonesia"')['MaleHDI'], textposition='inside',hovertemplate ='%{y:.2f}'),
             secondary_y=False,
         )
         fig.add_trace(
-            go.Bar(x=df.query('Province == "Indonesia"')['Year'], y=df.query('Province == "Indonesia"')['FemaleHDI'], name="Female HDI", marker_color='indianred'),
+            go.Bar(x=df.query('Province == "Indonesia"')['Year'], y=df.query('Province == "Indonesia"')['FemaleHDI'], name="Female HDI", marker_color='indianred', text=df.query('Province == "Indonesia"')['FemaleHDI'],textposition='inside', hovertemplate ='%{y:.2f}'),
             secondary_y=False,
         )
         fig.add_trace(
-            go.Scatter(x=df.query('Province == "Indonesia"')['Year'], y=df.query('Province == "Indonesia"')['GDI'], name="GDI", marker_color='darkgreen'),
+            go.Scatter(x=df.query('Province == "Indonesia"')['Year'], y=df.query('Province == "Indonesia"')['GDI'], name="GDI", marker_color='limegreen',),
             secondary_y=True,
         )
 
@@ -151,7 +153,9 @@ with tab1_1:
                         y=df.query('Province == "Indonesia"')['FemaleESY'],
                         offsetgroup=0,
                         marker_color="indianred",
-                        legendgroup='group1'),
+                        legendgroup='group1',
+                        text = df.query('Province == "Indonesia"')['FemaleESY'],
+                        hovertemplate = '%{y:.2f}'),
                         row = 1, col = 1)
             fig.add_trace(
                 go.Bar(
@@ -160,7 +164,9 @@ with tab1_1:
                         y=df.query('Province == "Indonesia"')['MaleESY'],
                         offsetgroup=1,
                         marker_color="dodgerblue",
-                        legendgroup='group2'),
+                        legendgroup='group2',
+                        text = df.query('Province == "Indonesia"')['MaleESY'],
+                        hovertemplate = '%{y:.2f}'),
                         row = 1, col =1)
             fig.add_trace(
                 go.Bar(
@@ -170,7 +176,9 @@ with tab1_1:
                         offsetgroup=0,
                         marker_color="indianred",
                         showlegend=False,
-                        legendgroup='group1'),
+                        legendgroup='group1',
+                        text = df.query('Province == "Indonesia"')['FemaleASY'],
+                        hovertemplate = '%{y:.2f}'),
                         row = 2, col = 1)
             fig.add_trace(
                 go.Bar(
@@ -180,7 +188,9 @@ with tab1_1:
                         offsetgroup=1,
                         marker_color="dodgerblue",
                         showlegend=False,
-                        legendgroup='group2'),
+                        legendgroup='group2',
+                        text = df.query('Province == "Indonesia"')['MaleESY'],
+                        hovertemplate = '%{y:.2f}'),
                         row = 2, col = 1)
             fig.update_traces(marker_line_color='black')
             fig.update_layout(hovermode="x unified", yaxis_title="Expected Scooling Years", xaxis_title='Year', yaxis2_title = 'Average Schooling Years', xaxis2_title = 'Year', paper_bgcolor='honeydew', plot_bgcolor='lavender', font_color='black', height=700, margin={"t":50,"b":50})
@@ -388,8 +398,17 @@ with tab1_1:
     st.markdown("---")
     st.markdown("### Conclusion")
     st.markdown("Overall, we can see that inequality of access, participation, control, and right between male and female still exist in many provinces in Indonesia. The largest gender inequality can be seen on economic and politic sectors. Fortunately, the situation has been getting better in the last 10 years. Hopefully our society can work together with the government to improve gender equality which will result in a fair and equal development across the whole country.")
+    
+    # Scroll to top after loading the data
+    components.html(
+        f"""
+            <script>
+                window.parent.document.querySelector('section.main').scrollTo(0, 0);
+            </script>
+        """,
+        height=0
+    )
             
-        
 # Documentation tab    
 with tab1_2:
     st.markdown("### Data Sources")
@@ -398,3 +417,4 @@ with tab1_2:
     st.markdown("The csv data used by this python script (unp_pro_df.csv) is obtained by processing the Excel files. The complete processes for data cleaning and exploration are documented in this [notebook](https://github.com/tmtsmrsl/GenderEqualityIndonesia/blob/main/CapstoneProject.ipynb).")
     st.markdown('### Inspiration')
     st.markdown("This article was inspired by [Our World in Data](https://ourworldindata.org/), an open-source publication that focuses on the world's largest problem.")
+    
