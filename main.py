@@ -105,10 +105,11 @@ with tab1_1:
         with tab2_2:
             fig = px.bar(df.query('Year == 2021').sort_values('GDI', ascending=False), x='Province', y='GDI', 
                         orientation='v', title = "<b>Gender Development Index by Province (2021)</b>",height=600, width=800, 
-                        color='Province', color_discrete_map=color_dict, hover_name='Province', hover_data={'Province': False})
+                        color='GDI', color_continuous_scale='rdbu', range_color=(75,95),hover_name='Province', hover_data={'Province': False},)
+            fig.update_traces(marker_line_color='black')
             fig.add_annotation(xref="x", yref="y", x=15, y=45, font_color='black', text="National Average", 
                             showarrow=False, textangle=-90)
-            fig.update_layout(xaxis_tickangle=-90, paper_bgcolor='honeydew', plot_bgcolor='lavender', font_color='black',yaxis_title='Gender Development Index')
+            fig.update_layout(xaxis_tickangle=-90, paper_bgcolor='honeydew', plot_bgcolor='#e6e6e6', font_color='black',yaxis_title='Gender Development Index')
             st.plotly_chart(fig, use_container_width=True)
     st.markdown("")    
     
@@ -213,8 +214,10 @@ with tab1_1:
     with col5_2:
         asy_diff_2021 = df.query('Year == 2021')[['Province','MaleASY','FemaleASY']]
         asy_diff_2021["ASY_diff"] = df.query('Year == 2021')['MaleASY']-df.query('Year == 2021')['FemaleASY']
-        fig = px.bar(asy_diff_2021.sort_values('ASY_diff'), x='ASY_diff', y='Province', title = "<b>Difference Between Male and Female Average Schooling Years by Province (2021)</b>",height=800, width=1000, color='Province', color_discrete_map=color_dict, labels={'ASY_diff':'Difference in Years'}, hover_name='Province', hover_data={"Province":False})
+        fig = px.bar(asy_diff_2021.sort_values('ASY_diff', ascending=False), x='ASY_diff', y='Province', title = "<b>Difference Between Male and Female Average Schooling Years by Province (2021)</b>",height=800, width=1000, color='ASY_diff', color_continuous_scale='darkmint', labels={'ASY_diff':'Difference in Years'}, hover_name='Province', hover_data={"Province":False, 'ASY_diff':':.2f'})
+        fig.update_traces(marker_line_color='black')
         fig.update_layout(xaxis_title="Difference in Years (Male ASY - Female ASY)",paper_bgcolor='honeydew', plot_bgcolor='lavender', font_color='black')
+        fig.add_vline(x=0, line_width=3, line_dash="dash", line_color="black")
         st.plotly_chart(fig, use_container_width=True)
     st.markdown("")
     
@@ -303,10 +306,11 @@ with tab1_1:
         with tab5_2:
             fig = px.bar(df.query('Year == 2021').sort_values('GEM', ascending=False), x='Province', y='GEM', 
                         orientation='v', title = "<b>Gender Empowerment Measure by Province (2021)</b>",height=600, width=800, 
-                        color='Province', color_discrete_map=color_dict, hover_name='Province', hover_data={'Province': False})
+                        range_color=(50,85), color="GEM", color_continuous_scale='rdbu', hover_name='Province', hover_data={'Province': False})
             fig.add_annotation(xref="x", yref="y", x=4, y=38, font_color='black', text="National Average", 
                             showarrow=False, textangle=-90)
-            fig.update_layout(xaxis_tickangle=-90, paper_bgcolor='honeydew', plot_bgcolor='lavender', font_color='black',yaxis_title='Gender Empowerment Measure')
+            fig.update_layout(xaxis_tickangle=-90, paper_bgcolor='honeydew', plot_bgcolor='#e6e6e6', font_color='black',yaxis_title='Gender Empowerment Measure')
+            fig.update_traces(marker_line_color='black')
             st.plotly_chart(fig, use_container_width=True)
     st.markdown("")
     
@@ -324,18 +328,20 @@ with tab1_1:
             fig = px.bar(df.query('Province == "Indonesia"'), x='Year', y=['FemaleSI','MaleSI'],orientation='v', barmode='stack', title = "<b>Male and Female Share of Income in Indonesia (2010-2021)</b>",height=600, width=900, color_discrete_map={'MaleSI':'dodgerblue', 'FemaleSI':'indianred'}, labels={'variable':'Gender', 'value':'Share of Income (%)'}, text_auto=True)
             fig.update_layout(hovermode='x unified', paper_bgcolor='honeydew', plot_bgcolor='lavender', font_color='black',margin={"l":100,})
             fig.update_traces(marker_line_color='black', hovertemplate=None)
-            fig.layout.yaxis.tickformat = ',.1%'
+            fig.layout.yaxis.tickformat = ',.0%'
             for idx, name in enumerate(['Female','Male']):
                 fig.data[idx].name = name
             st.plotly_chart(fig, use_container_width=True)
         with tab6_2:
             fig = px.bar(df.query('Year == 2021').sort_values('FemaleSI', ascending=False), x='Province', y='FemaleSI', 
                         orientation='v', title = "<b>Female Share of Income by Province (2021)</b>",height=600, width=800, 
-                        color='Province', color_discrete_map=color_dict, hover_name='Province', hover_data={'Province': False},labels={'FemaleSI':'FSI'})
+                        color='FemaleSI', color_continuous_scale='rdbu', hover_name='Province', hover_data={'Province': False, 'FemaleSI':':,.1%'},labels={'FemaleSI':'FSI'})
             fig.add_annotation(xref="x", yref="y", x=5, y=0.18, font_color='black', text="National Average", 
                             showarrow=False, textangle=-90)
-            fig.update_layout(xaxis_tickangle=-90, paper_bgcolor='honeydew', plot_bgcolor='lavender', font_color='black',margin={"l":100,}, yaxis_title='Female Share of Income')
-            fig.layout.yaxis.tickformat = ',.1%'
+            fig.update_layout(xaxis_tickangle=-90, paper_bgcolor='honeydew', plot_bgcolor='#e6e6e6', font_color='black',margin={"l":100,}, yaxis_title='Female Share of Income')
+            fig.layout.yaxis.tickformat = ',.0%'
+            fig.update_coloraxes(colorbar_tickformat=',.0%')
+            fig.update_traces(marker_line_color='black',)
             st.plotly_chart(fig, use_container_width=True)
     st.markdown("")
     
@@ -353,18 +359,20 @@ with tab1_1:
             fig = px.bar(df.query('Province == "Indonesia"'), x='Year', y=['FemaleIP','MaleIP'],orientation='v', barmode='stack', title = "<b>Male and Female Involvement in Parliament in Indonesia (2010-2021)</b>",height=600, width=900, color_discrete_map={'MaleIP':'dodgerblue', 'FemaleIP':'indianred'}, labels={'variable':'Gender', 'value':'Involvement in Parliament (%)'}, text_auto=True)
             fig.update_layout(hovermode='x unified', paper_bgcolor='honeydew', plot_bgcolor='lavender', font_color='black',margin={"l":100,})
             fig.update_traces(marker_line_color='black', hovertemplate=None)
-            fig.layout.yaxis.tickformat = ',.1%'
+            fig.layout.yaxis.tickformat = ',.0%'
             for idx, name in enumerate(['Female','Male']):
                 fig.data[idx].name = name
             st.plotly_chart(fig, use_container_width=True)
         with tab7_2:
             fig = px.bar(df.query('Year == 2021').sort_values('FemaleIP', ascending=False), x='Province', y='FemaleIP', 
                         orientation='v', title = "<b>Female Involvement in Parliament by Province (2021)</b>",height=600, width=800, 
-                        color='Province', color_discrete_map=color_dict, hover_name='Province', hover_data={'Province': False},labels={'FemaleIP':'FIP'})
+                        color='FemaleIP', color_continuous_scale='rdbu', hover_name='Province', hover_data={'Province': False, 'FemaleIP':':,.1%'},labels={'FemaleIP':'FIP'})
             fig.add_annotation(xref="paper", yref="paper", x=0.195, y=0.20, font_color='black', text="National Average", 
                             showarrow=False, textangle=-90)
-            fig.update_layout(xaxis_tickangle=-90, paper_bgcolor='honeydew', plot_bgcolor='lavender', font_color='black',margin={"l":100,}, yaxis_title='Female Involvement in Parliament')
-            fig.layout.yaxis.tickformat = ',.1%'
+            fig.update_layout(xaxis_tickangle=-90, paper_bgcolor='honeydew', plot_bgcolor='#e6e6e6', font_color='black',margin={"l":100,}, yaxis_title='Female Involvement in Parliament')
+            fig.layout.yaxis.tickformat = ',.0%'
+            fig.update_coloraxes(colorbar_tickformat=',.0%')
+            fig.update_traces(marker_line_color='black',)
             st.plotly_chart(fig, use_container_width=True)
     st.markdown("")
     
@@ -381,18 +389,20 @@ with tab1_1:
             fig = px.bar(df.query('Province == "Indonesia"'), x='Year', y=['FemalePP','MalePP'],orientation='v', barmode='stack', title = "<b>Male and Female Involvement in Professional Position in Indonesia (2010-2021)</b>",height=600, width=900, color_discrete_map={'MalePP':'dodgerblue', 'FemalePP':'indianred'}, labels={'variable':'Gender', 'value':'Involvement in Professional Position (%)'}, text_auto=True)
             fig.update_layout(hovermode='x unified', paper_bgcolor='honeydew', plot_bgcolor='lavender', font_color='black',margin={"l":100,})
             fig.update_traces(marker_line_color='black', hovertemplate=None)
-            fig.layout.yaxis.tickformat = ',.1%'
+            fig.layout.yaxis.tickformat = ',.0%'
             for idx, name in enumerate(['Female','Male']):
                 fig.data[idx].name = name
             st.plotly_chart(fig, use_container_width=True)
         with tab8_2:
             fig = px.bar(df.query('Year == 2021').sort_values('FemalePP', ascending=False), x='Province', y='FemalePP', 
                         orientation='v', title = "<b>Female Involvement in Professional Position by Province (2021)</b>",height=600, width=800, 
-                        color='Province', color_discrete_map=color_dict, hover_name='Province', hover_data={'Province': False},labels={'FemalePP':'FPP'})
+                        color='FemalePP', color_continuous_scale='rdbu', hover_name='Province', hover_data={'Province': False, 'FemalePP':':,.1%'},labels={'FemalePP':'FPP'})
             fig.add_annotation(xref="x", yref="y", x=22, y=0.25, font_color='black', text="National Average", 
                             showarrow=False, textangle=-90)
-            fig.update_layout(xaxis_tickangle=-90, paper_bgcolor='honeydew', plot_bgcolor='lavender', font_color='black',margin={"l":100,}, yaxis_title='Female in Professional Position')
-            fig.layout.yaxis.tickformat = ',.1%'
+            fig.update_layout(xaxis_tickangle=-90, paper_bgcolor='honeydew', plot_bgcolor='#e6e6e6', font_color='black',margin={"l":100,}, yaxis_title='Female in Professional Position')
+            fig.layout.yaxis.tickformat = ',.0%'
+            fig.update_coloraxes(colorbar_tickformat=',.0%')
+            fig.update_traces(marker_line_color='black',)
             st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("---")
