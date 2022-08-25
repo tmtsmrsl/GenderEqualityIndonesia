@@ -367,7 +367,7 @@ with tab1_1:
             fig = px.bar(df.query('Year == 2021').sort_values('FemaleIP', ascending=False), x='Province', y='FemaleIP', 
                         orientation='v', title = "<b>Female Involvement in Parliament by Province (2021)</b>",height=600, width=800, 
                         color='FemaleIP', color_continuous_scale='rdbu', hover_name='Province', hover_data={'Province': False, 'FemaleIP':':,.1%'},labels={'FemaleIP':'FIP'})
-            fig.add_annotation(xref="paper", yref="paper", x=0.195, y=0.20, font_color='black', text="National Average", 
+            fig.add_annotation(xref="x", yref="y", x=7, y=0.11, font_color='black', text="National Average", 
                             showarrow=False, textangle=-90)
             fig.update_layout(xaxis_tickangle=-90, paper_bgcolor='honeydew', plot_bgcolor='#e6e6e6', font_color='black',margin={"l":100,}, yaxis_title='Female Involvement in Parliament')
             fig.layout.yaxis.tickformat = ',.0%'
